@@ -1,0 +1,25 @@
+x0=[4 4]';
+mu0=[ ]';
+lam0=[0 0 0 0]';
+[x,val,k]=sqpm(x0,mu0,lam0)
+
+
+dfk=[-6 -2 -12]';
+Bk=[2 1 0;1 4 0; 0 0 0];
+Ae=[1 1 1];
+hk=[-2]';
+Ai=[1 -2 0;1 0 0; 0 1 0;0 0 1];
+gk=[3 0 0 0]';
+[d,mu,lam,val,k]=qpsubp(dfk,Bk,Ae,hk,Ai,gk)
+
+x0=[3 3]';
+mu0=[0]';
+lam0=[0 0]';
+[x,val,k]=sqpm(x0,mu0,lam0)
+
+
+
+x0=[1 1 1]';
+mu0=[0 0]';
+lam0=[]';
+[x,val,k]=sqpm(x0,mu0,lam0)

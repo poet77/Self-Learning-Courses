@@ -1,0 +1,123 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{diagbox}
+\usepackage{wasysym}
+
+\title{USTC\_CG HW9 Shader}
+\author{张继耀,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\tableofcontents
+	
+	\section {问题介绍}
+	\subsection{主要目的}
+	\begin{itemize}
+		\item 实现路径追踪算法
+	\end{itemize}
+	
+	\begin{itemize}
+		\item 环境光贴图重要性采样
+	\end{itemize}
+	
+	\begin{itemize}
+		\item 搭建场景(代码,json)并渲染
+	\end{itemize}
+	
+	
+	\section{算法设计}
+	
+	\subsection{路径追踪算法}
+	为了决定渲染后某一个像素处的值，可以从视点往该像素方向发射大量光线，计算每一条光路的着
+	色，然后进行平均。
+	
+	对于其中的每一条光路，都要求解渲染方程
+	$$ L_0(p,\omega) = L_e(p,\omega_0)+\int_{\mathcal{H}^2(n(p))}f_r(p,\omega_i,\omega_0)L_i(p,\omega_i)cos\theta_{\omega_i,n(p)}d\omega_i  $$
+	
+	路径追踪算法就是将求解渲染方程分为求直接光和间接光两部分的方法。
+	
+	为了方便，简记$$ \int_{p,\omega_i,\omega_0}L = \int_{\mathcal{H}^2(n(p))}f_r(p,\omega_i,\omega_0)L_i(p,\omega_i)cos\theta_{\omega_i,n(p)}d\omega_i$$
+	
+	若令$p'$为$p$点往$\omega_i$方向发出的射线与场景的交点，则由反射方程知:
+	$$ L_r(p,\omega_0) = \int_{p,\omega_0,\omega_1}L_i(p,\omega_i) $$
+	  $$ L_i(p,\omega_i) = L_0(p',-\omega_i) $$
+	  以上便形成了递归
+	  $$ L_0(p,\omega_0) = L_e(p',\omega_0) + \int_{p,\omega_0,\omega_i}L_0(p',-\omega_i) $$
+	  若对$L_r$做递归，将其展开，则有:
+	    $$ L_r(p,\omega_0) = \int_{p,\omega_0,\omega_i}L_e(p',-\omega_i) + \int_{p,\omega_0,\omega_i}L_r(p',-\omega_i) $$
+	\begin{itemize}
+		\item 将$\int_{p,\omega_0,\omega_1}L_e(p',-\omega_i)$称为直接光，记作$L_{dir}(p,\omega_0)$
+	\end{itemize}
+  \begin{itemize}
+	\item 将$\int_{p,\omega_0,\omega_1}L_r(p',-\omega_i)$称为直接光，记作$L_{indir}(p,\omega_0)$
+  \end{itemize}    
+	
+	\subsection{直接光}
+	   $$ L_{dir}(p,\omega_0)=\int_{p,\omega_0,\omega_i}L_e(p',-\omega_i) $$
+	   积分中，对于大部分方向$\omega_i$，$L_e(p',-\omega_i)=0$(非光源)，所以我们直接在光源所在方向上积分。
+	   
+	   其中$p$，$\omega_0$和$\omega_i$可用三点确定，如下图所示
+	    \begin{figure}[H]
+	   	\begin{center}
+	   		\includegraphics[width=6cm,height=4.5cm]{xyz}
+	   		\caption{直接光反射图示}	\label{xyz.label}
+	   	\end{center}
+	   \end{figure}
+   
+   图中$x$即为$p$，$y$即为$p'$，则由几何关系可知
+    $$    \omega_i=\frac{cos\theta_{y,x}}{\Vert x-y \Vert^2}A(y)   $$
+    
+    其中$\theta_{y,x}$是方向$x-y$与$n(y)$的夹角。
+    
+    引入几何传输项(两点间的"传输效率")
+       $$ G(x \leftrightarrow y)=V(x\leftrightarrow y)\frac{\vert cos\theta_{x,y} \vert \vert cos\theta_{y,x} \vert}{\Vert x-y \Vert^2} $$
+       
+    其中$V(x\leftrightarrow y)$是可见性函数，当$x$和$y$之间无阻隔时为1，否则为0。$G$为对称函数，即$ G(x \leftrightarrow y)= G(y \leftrightarrow x)$
+    
+    故有  $$  L_{dir}(x \rightarrow z)=\int_{A}f_r(y\rightarrow x \rightarrow z)L_e(y\rightarrow x ) G(x \leftrightarrow y)A(y) $$
+    
+    其中积分域$A$为场景中所有的面积，但只有光源处$L_e(y \rightarrow x) \ne 0$。记光源数为$N_e$，场景中的光源集为$\{L_{e_i} \}_{i=1}^{N_e}$，对应的区域集为$\{A(L_{e_i}) \}_{i=1}^{N_e}$，则可写为
+    $$  L_{dir}(x\rightarrow z)=\sum_{i=1}^{N_e}\int_{A(L_{e_i})}f_r(y\rightarrow x\rightarrow z)L_e(y\rightarrow x)G(x\rightarrow y)A(y) $$
+	
+	\subsection{间接光}
+	递归即可:
+	 $$   L_{r}(p,\omega_0)=\int_{p,\omega_0,\omega_i}L_e(p',-\omega_i)+\int_{p,\omega_0,\omega_i}L_r(p',-\omega_i)   $$
+	
+	\subsection{蒙特卡洛积分与重要性采样}
+	
+	因为光线的采样都是离散的，对于积分无法直接计算，所以采用蒙特卡洛积分去逼近原积分。
+	   $$  \frac{1}{N}\sum_{i=1}^{N}\frac{f(x_i)}{p(x_i)} \rightarrow \int_Df(x)dx $$
+	即利用多采样以及采样点的概率就可以对积分做一个近似。
+	
+	方差:  $$ V[F_N] = \frac{1}{N}V[\frac{f(x)}{p(x)}] \sim O(\frac{1}{N}) $$
+    所以增加样本数即可更加逼近原积分。
+	
+	
+	
+	
+	\section{结果展示}
+	
+	
+	\section{总结与讨论}
+	
+	
+\end{document}

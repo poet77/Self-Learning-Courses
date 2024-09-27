@@ -1,0 +1,160 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+
+
+\title{Numerical Analysis Homework11}
+\author{Zhang Jiyao,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\section{Introduction}
+	
+	编写一个用有限差分法求解线性两点边值问题的通用的计算机程序,允许用户提供$\alpha,\beta,a,b,n$,以及函数$u,v,w$.
+	
+	对下面的例子测试上题中编写的程序:
+	$$	
+	a.\left\{ 
+	\begin{array}{lc}
+		x^{''} = -x \\
+		x(0) = 0  \quad x(\pi/2)=7\\
+	\end{array}
+	\right.$$
+	
+	$$	
+	b.\left\{ 
+	\begin{array}{lc}
+		x^{''} = 2e^t-x \\
+		x(0) = 2  \quad x(1)=e+cos1\\
+	\end{array}
+	\right.$$
+	
+ 然后计算这两种测试情况中数值解的误差,对应的解分别是:$a.x(t)=\text{7}sint+\text{3}cost.$\quad $b.x(t)=e^t+cost$.
+	
+	
+	\section{Method}
+	假定我们求解的问题是:
+	$$	
+	\left\{ 
+	\begin{array}{lc}
+		x^{''} = f(t,x,x') \\
+		x(a) = \alpha  \quad x(b)=\beta \\
+	\end{array}
+	\right.$$
+
+    设区间$[a,b]$用点$a=t_0,t_1,t_2,...,t_{n+1}=b$分割,为简单起见,我们假设
+    $$ t_i=a+ih \quad 0 \leq i \leq n+1 \quad h=\frac{b-a}{n+1}$$
+    
+    若$f$以非线性方式包含$y_i$,则这些方程是非线性的,一般来说求解很困难.因而我们总假定$f$关于$x$和$x'$是线性的,则它具有下列形式
+              $$   f(t,x,x')=u(t)+v(t)x+w(t)x' $$
+              
+    以及下面的公式
+    $$   x'(t)=(2h)^{-1}[x(t+h)-x(t-h)]-\frac{1}{6}h^2x^{'''}(\xi) $$
+    $$   x^{''}(t)=h^{-2}[x(t+h)-2x(t)+x(t-h)]-\frac{1}{12}h^2x^{(4)}(\tau) $$
+	
+	那么我们可以将方程组写成下面的离散形式:
+	
+		$$	
+	\left\{ 
+	\begin{array}{lc}
+		y_0 = \alpha \\
+		(-1-\frac{1}{2}hw_i)y_{i-1}+(2+h^2v_i)y_i+(-1+\frac{1}{2}hw_i)y_{i+1} = -h^2u_i (1\leq i \leq n)\\
+		y_{n+1} = \beta
+	\end{array}
+	\right.$$
+	
+	我们记$u_i=u(t_i),v_i=v(t_i).$
+	
+	下面我们引进缩写:
+	$$ a_i=-1-\frac{1}{2}hw_{i+1}$$
+	$$ d_i=2+h^2v_i$$
+	$$c_i=-1+\frac{1}{2}hw_i$$
+	$$b_i=-h^2u_i$$
+	
+	解线性方程组
+	
+		\begin{equation}
+		\left[
+		\begin{array}{cccccc}
+			d_{1}& c_{1} &  &   \\
+			a_{1}& d_{2} &c_{2}&   \\
+			&a_{2} &d_{3}&c_{3}       \\
+			&... & ...  &...&  \\
+			&\quad&a_{n-2} &d_{n-1} &c_{n-1} \\
+			&\quad&        &a_{n-1} &d_{n} 
+			
+		\end{array}
+		\right ]
+		\left[
+		\begin{array}{cccc}
+			y_{1}\\
+			y_{2}\\
+			y_{3}\\
+			... \\
+			y_{n-1}\\
+			y_{n}
+		\end{array}
+		\right ]
+		=
+		\left[
+		\begin{array}{cccc}
+			b_{1}-a_0\alpha \\
+			b_{2}\\
+			b_{3}\\
+			... \\
+			b_{n-1}\\
+			b_{n}-c_n\beta
+		\end{array}
+		\right ]
+	\end{equation}
+
+    解得$y_i$,作为近似的数值解.
+	
+	
+	\section{Results}
+	
+	\begin{table}[h]
+		\setlength\tabcolsep{25pt}
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			n  &例1误差 & order  & 例2误差 & order  \\ \hline
+			10  & 0.0047           & -----  & 2.4401e-04       & -----  \\ \hline
+			20 & 0.0013          & 1.8650 & 6.7120e-05       & 1.8621 \\ \hline
+			40 & 3.4022e-04       & 1.9317 & 1.7607e-05      & 1.9306 \\ \hline
+			80 & 8.7174e-04       & 1.9645 & 4.5114e-06      & 1.9645 \\ \hline
+		    160 & 2.2064e-04       & 1.9822 & 1.1419e-06      &1.9822 \\ \hline
+		\end{tabular}
+	\end{table}
+
+  这里的误差是所有节点与解析解误差的最大值.
+	
+
+	
+	
+	\section{Discussion}
+	
+	我们可以看到有限差分法求解边值问题的误差随着$N$的增大,大致是$\mathcal{O}(h^2)$量级的.该方法的误差阶大致也是2阶的,并且比较稳定.这说明该方法的性质比较稳定,误差较小,性能优良.
+	
+	
+	\section{Computer Code}
+	
+	\verbatiminput{main.m}
+	\verbatiminput{differ.m}
+	\verbatiminput{Chase_method.m}
+
+\end{document}

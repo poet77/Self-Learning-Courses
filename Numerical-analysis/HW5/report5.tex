@@ -1,0 +1,162 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+
+
+\title{Numerical Analysis Homework5}
+\author{Zhang Jiyao,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\section{Introduction}
+	
+	\textbf{问题1}
+	
+	分别编写一个用复化$Simpson$积分公式和复化梯形积分公式计算积分的通用程序,并且利用上述的程序计算积分
+	
+	$$I(f)=\int_{0}^{4}sin(x)dx$$
+	
+	取节点$x_i,i=0,...,N$,其中$N=2^k,k=1,...,12$.并分析误差,计算算法的收敛阶.
+	
+	$$Ord=\frac{ln(Error_{ord}/Error_{now})}{ln(N_{now}/N_{old})}$$
+	
+	\textbf{问题2}
+	
+	对函数
+	$$ f(x)=\frac{1}{1+25x^2},x\in [-1,1]$$
+	
+	构造Lagrange插值多项式$p_L(x)$,插值节点取为:
+	
+	$$1.x_i=1-\frac{2}{N}i,i=0,1,...,N$$
+	
+	$$2.x_i=-cos(\frac{i+1}{N+2}\pi),i=0,1,...,N$$
+	
+	并且利用$\int_{-1}^{1}p_{L}(x)dx$计算积分$\int_{-1}^{1}f(x)dx$的近似值,计算如下误差
+	
+	$$\vert \int_{-1}^{1}p_{L}(x)dx - \int_{-1}^{1}f(x)dx \vert$$
+	
+	并且对$N=5,10,15,20,25,30,35,40$比较以上两组节点的结果.
+	
+
+	\section{Method}
+	
+	对问题1,考虑对应的复化梯形公式和复化$Simpson$公式,直接代入计算即可.
+	
+	复化梯形公式,对任意的区间$[a,b]$,以及节点${x_k}$,我们有
+	$$ T_n = \frac{b-a}{2n}[f(a)+2\sum_{k=1}^{n-1}f(x_k)+f(b)]$$
+	
+	复化$Simpson$公式,对任意的区间$[a,b]$,以及节点${x_k}$,我们有
+	$$ S_n = \frac{b-a}{6n}[f(a)+4\sum_{k=1}^{n-1}f(x_{k+\frac{1}{2}}) +2\sum_{k=1}^{n-1}f(x_k)+f(b)]$$
+	
+	对于问题2,考虑对应的$Lagrange$插值函数,定义
+	$$ l_{i}(x)=\prod_{j=0,j\ne i}^{n}  \frac{x-x_j}{x_i-x_j} $$
+	
+	则在以上结点插值$f$的次数最多为$n$的多项式为
+	$$ p(x)=\sum_{i=0}^{n}f(x_i)l_i(x)$$
+	
+	则我们就近似的以
+	$$ \int_{a}^{b}p(x)dx$$
+	
+	作为$f$的积分值
+
+	
+	
+	\section{Results}
+	
+	第一个问题的结果如下图所示
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			N & 复化Simpson error & order & 复化梯形error & order \\ \hline
+		2 & 0.2666 & 0  & 0.5918 & 0  \\ \hline
+		4 & 0.0104 & 4.6789 & 0.1402 & 2.0782 \\ \hline
+		8 & 0.00059 & 4.1367 & 0.0346  & 2.0184 \\ \hline
+		16 & 3.6155e-05  & 4.0327 & 0.0086 & 2.0045 \\ \hline
+		32 & 2.2470e-06  & 4.0081 & 0.0022 & 2.0011  \\ \hline
+		64 & 1.4025e-07  & 4.0020 & 0.0005 & 2.0003 \\ \hline
+		128 & 8.7623e-09  & 4.0005 & 0.0001  & 2.0000 \\ \hline
+		256 & 5.4759e-10  & 4.0001 & 3.3643e-05  & 2.0000 \\ \hline
+		512 & 3.4224e-11  & 4.0000 & 8.4109e-06  & 2.0000 \\ \hline
+		1024 & 2.1388e-12  & 4.0001 & 2.1027e-06  & 2.0000 \\ \hline
+		2048 & 1.3400e-13  & 3.9965 & 5.2568e-07  & 2.0000 \\ \hline
+		4096 & 8.1046e-15 & 4.0474 & 1.3142e-07 & 2.0000 \\ \hline
+		\end{tabular}
+	\end{table}
+
+第二个问题,若选用第一组节点如下图所示
+	
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		N &  $\int_{-1}^{1}p_{L}(x)dx$ & $\int_{-1}^{1}f(x)dx$ & $\vert  \int_{-1}^{1}p_{L}(x)dx- \int_{-1}^{1}f(x)dx     \vert$   \\ \hline
+5 & 0.4615 & 0.54936 & 0.0878 \\ \hline
+10 & 0.9347 & 0.54936 & 0.3853 \\ \hline
+15 & 0.8311 & 0.54936 & 0.2818 \\ \hline
+20 & -5.3699 & 0.54936 & 5.9193 \\ \hline
+25 & -5.3999 & 0.54936 & 5.9492 \\ \hline
+30 & 153.7979 & 0.54936 & 153.2485 \\ \hline
+35 & 173.8803 & 0.54936 & 173.3309 \\ \hline
+40 & -4912.4114 & 0.54936 & 4.9130e+03 \\ \hline
+\end{tabular}
+\end{table}
+
+若选用第二组节点则如下图所示
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			N &  $\int_{-1}^{1}p_{L}(x)dx$ & $\int_{-1}^{1}f(x)dx$ & $\vert  \int_{-1}^{1}p_{L}(x)dx- \int_{-1}^{1}f(x)dx     \vert$   \\ \hline
+		5 & 0.4811 & 0.54936 & 0.0682 \\ \hline
+		10 & 0.5541 & 0.54936 & 0.0047 \\ \hline
+		15 & 0.5476 & 0.54936 & 0.0018 \\ \hline
+		20 & 0.5500  & 0.54936 & 6.5049e-04 \\ \hline
+		25 & 0.5494 & 0.54936 & 3.9432e-07 \\ \hline
+		30 & 0.5493 & 0.54936 & 3.8668e-05 \\ \hline
+		35 & 0.5494 & 0.54936 & 3.2346e-06 \\ \hline
+		40 & 0.5494 & 0.54936 & 4.5084e-06 \\ \hline
+		\end{tabular}
+	\end{table}
+	
+	
+	\section{Discussion}
+	
+	关于第一个问题,可以看出复化Simpson公式计算出的值无论是误差还是收敛阶数都要优于复化梯形公式。我们可以认为复化Simpson公式是一个更优良的算法。
+	
+	\bigskip
+	
+	关于第二个问题,可以直接看出第二组节点是远远优于第一组节点的。回忆之前的作业,采用第一组这种等距节点进行插值,往往就可能会在某些点处产生较大的误差。而采用第二组节点这种得到的误差就很小,基本能得到近似的积分值。
+	
+	
+	
+	
+	
+	\section{Computer Code}
+    \verbatiminput{f.m}
+	\verbatiminput{main.m}
+	\verbatiminput{main2.m}
+	\verbatiminput{Sn.m}
+	\verbatiminput{T.m}
+	
+	
+	
+	
+\end{document}

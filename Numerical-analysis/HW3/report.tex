@@ -1,0 +1,129 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+
+
+\title{Numerical Analysis Homework3}
+\author{Zhang Jiyao,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\section{Introduction}
+	
+	对函数
+	$$ f(x)=e^x,x\in [0.1]$$
+	构造等距节点的样条插值函数,对以下两种类型的样条函数
+	
+	(1):一次分片线性样条
+	
+	(2):满足$S'(0)=1$,$S'(1)=e$的三次样条
+	
+	并计算如下误差
+	$$max_i\{\left|f(x_{i-\frac{1}{2}})-S(x_{i-\frac{1}{2}})\right|, i=1,...,N \}$$
+	
+	说明:其中$x_{i-\frac{1}{2}}$是每个小区间的中点.对$N=5,10,20,40$比较以上两组节点的结果。并且计算该算法的收敛阶,公式如下
+	
+	$$Ord=\frac{ln(\frac{Error_{old}}{Error_{now}})}{ln(\frac{N_{now}}{N_{old}})}$$
+	
+	
+	
+	\section{Method}
+	
+	先讨论第一种一次分片线性样条的情况,该情况下比较简单。因为构造的一次分片线性样条在每个区间上面都是线性函数,那么只需要根据每个区间两侧端点的值,构造对应区间上的线性函数即可。为了计算一点的值,只需要利用以下公式即可
+	$$y=\frac{x-x_0(i+1)}{x_0(i)-x_0(i+1)}y_0(i)+\frac{x-x_0(i)}{x_0(i+1)-x_0(i)}y_0(i+1)$$
+	
+	说明:$x$是待求节点,$y$是待求值,$x_0(i)$是第$i$个区间的左端点,$y_0(i)$是其对应的值
+	
+	接下来讨论三次样条的情况。因为三次样条本身已经确定了$4n-2$个自由度,只需要给出边界的两个自由度。而本题中$S'(0)=1$,$S'(1)=e$满足要求。记$M_i=S^{''}(x_i)$,则我们可以给出$M_i$满足的线性方程组
+	
+	\begin{equation}
+		\left[
+		\begin{array}{cccc}
+			u_{1}& h_{1} &  &   \\
+			h_{1}& u_{2} &h_{2}&   \\
+			  &h_{2} &u_{3}&h_{3}       \\
+		 	        &... & ...  &  \\
+			            &h_{n-3} &u_{n-2} &h_{n-2} \\
+			            &        &h_{n-2} &u_{n-1} 
+			
+		\end{array}
+		\right ]
+		\left[
+		\begin{array}{cccc}
+			M_{1}\\
+			M_{2}\\
+			M_{3}\\
+			... \\
+			M_{n-2}\\
+			M_{n-1}
+		\end{array}
+		\right ]
+		=
+		\left[
+		\begin{array}{cccc}
+				v_{1}\\
+			v_{2}\\
+			v_{3}\\
+			... \\
+			v_{n-2}\\
+			v_{n-1}
+		\end{array}
+		\right ]
+	\end{equation}
+
+然后我们采用追赶法解这个线性方程组。
+
+其中$h_i=x_{i+1}-x_i$,$u_i=2(h_i+h_{i+1})$,$b_i=6\frac{y_{i+1}-y_i}{h_i}$,$v_i=b_i-b_{i-1}$,再结合边界条件$S'(0)=1$,$S'(1)=e$即可得出结论。
+
+接下来讨论计算样条函数在某一确定点处的值。先确定$x$是在哪个区间中,比如说是$[x_i,x_{i+1}]$中,那么重写$S_i(x)$的表达式为
+$$S_i(x)=y_i+(x-t_i)[C_i+(x-t_i)[B_i+(x-t_i)A_i]]$$
+
+其中,$A_i=\frac{M_{i+1}-M_i}{6h_i}$,$B_i=\frac{M_i}{2}$,$C_i=-\frac{h_iM_{i+1}}{6}-\frac{h_iM_i}{3}+\frac{y_{i+1}-y_i}{h_i}$
+
+	\section{Results}
+	
+
+\begin{table}[h]
+	\setlength\tabcolsep{25pt}
+	\begin{tabular}{|l|l|l|l|l|}
+		\hline
+		n  & Method (1) error & order  & Method (2) error & order  \\ \hline
+		5  & 0.0123           & -----  & 1.0907e-05       & -----  \\ \hline
+		10 & 0.0032           & 1.9288 & 6.9559e-07       & 3.9709 \\ \hline
+		20 & 8.2853e-04       & 1.9642 & 4.3871e-08       & 3.9869 \\ \hline
+		40 & 2.0973e-04       & 1.9820 & 2.7538e-09       & 3.9938 \\ \hline
+	\end{tabular}
+\end{table}
+	
+	\section{Discussion}
+	
+	观察数据可知，两种方法都有随着$N$越来越大,误差减小，收敛阶增大的趋势。
+	
+	首先单独讨论。第一种方法的误差相对较大,在$N=5$时误差已经达到了0.01,可见分片线性样条并不是一个优秀的插值函数。并且观察到$N$从20变到40时,误差反而增大,这说明这种算法不够稳定,可能在某些节点处会有较大的误差。
+	
+	相比之下，第二种方法的误差就小了很多,误差最大也不过$1e-5$量级.并且误差随着$N$的增大越来越小，较为稳定。
+	
+	两者之间对比的话，无论误差还是收敛阶,第二种方法都完胜第一种。综上我们可以认为三次样条插值是更好的算法。
+	
+	\section{Computer Code}
+	
+	\verbatiminput{main.m}
+	\verbatiminput{sol_linear.m}
+	\verbatiminput{cubicspline.m}
+	\verbatiminput{Chase_method.m}
+
+\end{document}

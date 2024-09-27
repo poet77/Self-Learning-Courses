@@ -1,0 +1,116 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+
+
+\title{Numerical Analysis Homework4}
+\author{Zhang Jiyao,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\section{Introduction}
+	
+	编程实现用Richardson外推计算$f'(x)$的值,$h=1$.函数$f(x)$分别取
+	$$ lnx,x=3,M=3$$
+	$$ tanx,x=sin^{-1}(0.8),M=4$$
+	$$ sin(x^2+\frac{1}{3}x),x=0,M=5$$
+	
+	并计算如下的三角阵列
+	
+\begin{equation}
+	\begin{bmatrix}
+		D(0,0)  \\
+		D(1,0) & D(1,1)  \\
+		D(2,0) & D(2,1) & D(2,2) \\
+		... & ... & ... \\
+		D(M,0) & D(M,1) & D(M,2) &...& & D(M,M)
+	\end{bmatrix}
+\end{equation}
+
+	
+	\section{Method}
+	
+	我们采用执行$M$步的理查森外推算法:
+	
+	1.选取一个方便的$h$值(例如$h=1$)并且计算$M+1$个数
+	$$ D(n,0)=\varphi(\frac{h}{2^n})  \quad (0 \leq n \leq M)$$
+	
+	2.用下列公式计算
+	$$ D(n,k)=\frac{4^k}{4^k-1}D(n,k-1)-\frac{1}{4^k-1}D(n-1,k-1)  $$
+	这里
+	$$ k=1,2,...,M, n=k,k+1,...,M.$$
+	
+	\bigskip
+	
+
+	\section{Results}
+	
+	按照顺序,求得的导数值依次由下面三张表格所示
+	
+	\begin{table}[H]
+		\begin{tabular}{|l|l|l|l|}
+			\hline
+			0.346574 & 0        & 0        & 0        \\ \hline
+			0.336472 & 0.33105  & 0        & 0        \\ \hline
+			0.334108 & 0.33332  & 0.333334 & 0        \\ \hline
+			0.333526 & 0.333333 & 0.333333 & 0.333333 \\ \hline
+		\end{tabular}
+	\end{table}
+
+	\bigskip
+	
+		
+	
+	\begin{table}[H]
+		\begin{tabular}{|l|l|l|l|l|}
+			\hline
+			-1.30619 & 0       & 0       & 0       & 0       \\ \hline
+			6.46534  & 9.05584 & 0       & 0       & 0       \\ \hline
+			3.2091   & 2.12369 & 1.66154 & 0       & 0       \\ \hline
+			2.87298  & 2.76094 & 2.80342 & 2.82155 & 0       \\ \hline
+			2.8009   & 2.77688 & 2.77794 & 2.77753 & 2.77736 \\ \hline
+		\end{tabular}
+	\end{table}
+
+	\begin{table}[H]
+		\begin{tabular}{|l|l|l|l|l|l|}
+			\hline
+			0.176784 & 0        & 0        & 0        & 0        & 0        \\ \hline
+			0.321478 & 0.369709 & 0        & 0        & 0        & 0        \\ \hline
+			0.332298 & 0.335904 & 0.333651 & 0        & 0        & 0        \\ \hline
+			0.333196 & 0.333496 & 0.333335 & 0.33333  & 0        & 0        \\ \hline
+			0.333307 & 0.333343 & 0.333333 & 0.333333 & 0.333333 & 0        \\ \hline
+			0.333327 & 0.333334 & 0.333333 & 0.333333 & 0.333333 & 0.333333 \\ \hline
+		\end{tabular}
+	\end{table}
+	
+	
+
+	\section{Discussion}
+	
+	从得到的最终值,即$D(M,M)$可以看出,所得到的近似导数值还是较为准确的.基本接近实际的导数值。并且所运行的步数$M$也没有太多.综上,Richardson外推法确实是一个性能优良的算法.
+	
+	
+	
+	\section{Computer Code}
+		\verbatiminput{diffext1.m}
+	\verbatiminput{main.m}
+
+	
+
+	
+\end{document}

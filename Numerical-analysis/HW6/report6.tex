@@ -1,0 +1,132 @@
+\documentclass{article}
+\textheight 23.5cm \textwidth 15.8cm
+%\leftskip -1cm
+\topmargin -1.5cm \oddsidemargin 0.3cm \evensidemargin -0.3cm
+%\documentclass[final]{siamltex}
+
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{amssymb,ctex}
+\usepackage{mathrsfs}
+\usepackage{latexsym,amsmath,amssymb,amsfonts,epsfig,graphicx,cite,psfrag}
+\usepackage{eepic,color,colordvi,amscd}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multirow}
+
+
+\title{Numerical Analysis Homework6}
+\author{Zhang Jiyao,PB20000204}
+
+\begin{document}
+	\maketitle
+	
+	\section{Introduction}
+	
+	利用复化梯形积分公式和复化3点Gauss积分公式计算积分的通用程序计算下列三个积分
+	\begin{equation}
+    I_1(f)=\int_0^{1}e^{-x^2}dx
+	\end{equation}
+    \begin{equation}
+	I2(f)=\int_0^{4}\frac{1}{1+x^2}dx
+    \end{equation}
+    \begin{equation}
+	I_3(f)=\int_0^{2\pi}\frac{1}{2+cos(x)}dx
+    \end{equation}
+	
+	其中取节点$x_i,i=0,...N$,$N$为$2^k,k=1,...,7$.并且给出误差估计以及计算收敛阶。
+	
+	\section{Method}
+	
+	对于复化梯形积分公式,对任意的区间$[a,b]$,以及等距节点${x_k}$,我们有
+	$$ T_n = \frac{b-a}{2n}[f(a)+2\sum_{k=1}^{n-1}f(x_k)+f(b)]$$
+	
+	而对于复化三点Gauss积分公式,在区间$[-1,1]$上我们有
+
+	$$	\int_{-1}^{1}f(x)dx \approx \dfrac{5}{9}f(-\sqrt{\dfrac{3}{5}})+\dfrac{8}{9}f(0)+\dfrac{5}{9}f(\sqrt{\dfrac{3}{5}})$$
+	
+	那么对于一般的小区间$[x_i,x_{i+1}]$,可以通过坐标变换将其变为$[-1,1]$。对一般的区间$[a,b]$我们有
+	$$\int_{a}^{b}f(x)dx=\frac{1}{2}(b-a)\int_{-1}^{1}f(\frac{1}{2}(a+b)+\frac{1}{2}(b-a)t)dt$$
+    $$=\frac{1}{18}(b-a)[5f(\frac{1}{2}(a+b)-\frac{1}{2}(b-a) \sqrt{\frac{3}{5}})+8f(\frac{1}{2}(a+b))+5f(\frac{1}{2}(a+b)+\frac{1}{2}(b-a)\sqrt{\frac{3}{5}})] $$
+	
+	那么我们仍然先取等距节点,然后在每个小区间上积分再对所有小区间求和即可。
+	
+
+
+	
+	
+	
+	
+	
+	\section{Results}
+	
+	使用复化梯形得到的结果如下
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|l|l|l|l|l|l|}
+			\hline
+			* &
+			 \multicolumn{2}{c|}{$l_1(f)$} &
+			 \multicolumn{2}{c|}{$l_2(f)$} &
+			 \multicolumn{2}{c|}{$l_3(f)$}  \\   \hline
+			
+			
+			N & 误差 & 阶 & 误差 & 阶 & 误差 & 阶 \\ \hline
+			2 & 0.0155 & 0  & 0.1330 & 0  & 0.5612 & 0  \\ \hline
+			4 & 0.00384 & 2.0088 & 0.0036 & 5.2097 & 0.0376 & 3.9000 \\ \hline
+			8 & 0.00096 & 2.0022 & 5.6426e-04 & 2.6712 & 1.9279e-04 & 7.6073 \\ \hline
+			16 & 0.00024 & 2.0006 & 1.4408e-04 & 1.9695 & 5.1226e-09  & 15.1998 \\ \hline
+			32 & 5.9878e-05  & 2.0001 & 3.6038e-05  & 1.9993 & 4.4409e-16  & 23.4595 \\ \hline
+			64 & 1.4969e-05  & 2.0000 & 9.0106e-06  & 1.9998 & 8.8818e-16  & -1  \\ \hline
+			128 & 3.7423e-06 & 2.0000 & 2.2527e-06 & 2.0000 & 8.8818e-16 & 0 \\ \hline
+		\end{tabular}
+	\end{table}
+
+    使用Gauss积分公式得到的结果为
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|l|l|l|l|l|l|}
+			\hline
+			
+			* &
+			\multicolumn{2}{c|}{$l_1(f)$} &
+			\multicolumn{2}{c|}{$l_2(f)$} &
+			\multicolumn{2}{c|}{$l_3(f)$}  \\   \hline
+			
+			
+			N & 误差 & 阶 & 误差 & 阶 & 误差 & 阶 \\ \hline
+		 2 & 3.6111e-08  & 0  & 1.2676e-04 & 0  & 0.0061 & 0  \\ \hline
+		4 & 4.0215e-10  & 6.4885 & 1.2593e-04 & 0.0095 & 7.3833e-04 & 3.0504 \\ \hline
+		8 & 5.7422e-12  & 6.1300 & 2.4580e-07  & 9.0009 & 4.3261e-06  & 7.4151 \\ \hline
+		16 & 8.7708e-14  & 6.0328 & 2.0706e-12  & 16.8571 & 1.1502e-10  & 15.1988 \\ \hline
+		32 & 1.3323e-15  & 6.0407 & 4.5741e-14  & 5.5004 & 3.5527e-15  & 14.9826 \\ \hline
+		64 & 0  & Inf  & 6.6613e-16  & 6.1015 & 4.4409e-16  & 3  \\ \hline
+		128 & 2.2204e-16 & -Inf & 2.2204e-16 & 1.5850 & 9.3259e-15 & -4.3923 \\ \hline
+		\end{tabular}
+	\end{table}
+
+
+	\section{Discussion}
+	
+	对于复化梯形积分公式得到的结果来说,前两个结果较稳定,收敛阶数基本控制在2左右,误差也不算太大。但第三个积分得到的结果虽然误差较小,但收敛阶数不太稳定。这可能与具体的函数性质有关,并且注意到在$N=64$和$N=128$时得到的结果是一样的。可能也和计算机计算的精度有关系。
+	
+	而对于Gauss积分公式，就结果而言，得到的误差还是小于复化梯形公式的。但注意到Gauss积分公式的收敛阶数相当不稳定，往往具有较大的波动，但同时收敛速度也十分的快。以上就是Gauss积分公式的优点和缺点。
+	
+	
+	
+	
+	
+	
+	\section{Computer Code}
+	\verbatiminput{G.m}
+	\verbatiminput{main.m}
+	\verbatiminput{T.m}
+	
+	
+	
+	
+\end{document}

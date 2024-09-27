@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}问题介绍}{1}{}%
+\contentsline {subsection}{\numberline {1.1}主要目的}{1}{}%
+\contentsline {subsection}{\numberline {1.2}实验内容}{2}{}%
+\contentsline {section}{\numberline {2}算法设计}{2}{}%
+\contentsline {subsection}{\numberline {2.1}极小曲面}{2}{}%
+\contentsline {subsection}{\numberline {2.2}参数化}{3}{}%
+\contentsline {section}{\numberline {3}结果展示}{3}{}%
+\contentsline {subsection}{\numberline {3.1}程序界面}{3}{}%
+\contentsline {subsection}{\numberline {3.2}实验结果}{4}{}%
+\contentsline {subsubsection}{\numberline {3.2.1}测试样例}{4}{}%
+\contentsline {subsubsection}{\numberline {3.2.2}两种参数化的对比}{4}{}%
+\contentsline {section}{\numberline {4}总结与讨论}{5}{}%

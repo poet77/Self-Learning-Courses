@@ -1,0 +1,12 @@
+\contentsline {section}{\numberline {1}问题介绍}{1}{}%
+\contentsline {subsection}{\numberline {1.1}主要目的}{1}{}%
+\contentsline {subsection}{\numberline {1.2}实验内容}{1}{}%
+\contentsline {section}{\numberline {2}算法设计}{2}{}%
+\contentsline {subsection}{\numberline {2.1}背景}{2}{}%
+\contentsline {subsection}{\numberline {2.2}欧拉隐式方法}{2}{}%
+\contentsline {subsection}{\numberline {2.3}加速方法}{3}{}%
+\contentsline {subsection}{\numberline {2.4}边界条件和约束}{4}{}%
+\contentsline {subsubsection}{\numberline {2.4.1}外力条件}{4}{}%
+\contentsline {subsubsection}{\numberline {2.4.2}位移约束}{4}{}%
+\contentsline {section}{\numberline {3}结果展示}{4}{}%
+\contentsline {section}{\numberline {4}总结与讨论}{4}{}%

@@ -1,0 +1,24 @@
+area light
+
+Position
+x -0.1
+y 0.2
+z 1.80
+
+Rotation
+
+x -68.0
+y 180
+z 180
+
+obj
+
+position
+x -0.60
+z -3.10
+
+rotation
+
+z 155.00
+
+fixed point 0 20

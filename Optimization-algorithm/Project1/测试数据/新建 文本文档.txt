@@ -1,0 +1,4 @@
+x0=[4 4]';
+mu0=[ ]';
+lam0=[0 0 0 0]';
+[x,mu,lam,val,k]=sqpm(x0,mu0,lam0)

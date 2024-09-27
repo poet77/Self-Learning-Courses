@@ -1,0 +1,9 @@
+\contentsline {section}{\numberline {1}问题介绍}{1}{}%
+\contentsline {subsection}{\numberline {1.1}主要目的}{1}{}%
+\contentsline {section}{\numberline {2}算法设计}{1}{}%
+\contentsline {subsection}{\numberline {2.1}路径追踪算法}{1}{}%
+\contentsline {subsection}{\numberline {2.2}直接光}{2}{}%
+\contentsline {subsection}{\numberline {2.3}间接光}{3}{}%
+\contentsline {subsection}{\numberline {2.4}蒙特卡洛积分与重要性采样}{3}{}%
+\contentsline {section}{\numberline {3}结果展示}{3}{}%
+\contentsline {section}{\numberline {4}总结与讨论}{3}{}%
